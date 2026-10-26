@@ -4,7 +4,7 @@ import {
   Cpu,
   GraduationCap,
   HeartHandshake,
-  Sparkles,
+  ShieldCheck,
   Clock,
   FileCheck,
 } from "lucide-react";
@@ -14,7 +14,7 @@ const iconMap = {
   Cpu: Cpu,
   GraduationCap: GraduationCap,
   HeartHandshake: HeartHandshake,
-  Sparkles: Sparkles,
+  ShieldCheck: ShieldCheck,
   Clock: Clock,
   FileCheck: FileCheck,
 };
@@ -43,7 +43,7 @@ export default function WhyUs() {
         {/* 6 Feature Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {CLINIC_INFO.whyChoosePoints.map((point) => {
-            const IconComponent = iconMap[point.icon as keyof typeof iconMap] || Sparkles;
+            const IconComponent = iconMap[point.icon as keyof typeof iconMap] || ShieldCheck;
 
             return (
               <div

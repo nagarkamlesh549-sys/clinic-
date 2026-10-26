@@ -98,7 +98,7 @@ export const CLINIC_INFO = {
       title: "Hygienic & Serene Clinic",
       description:
         "A peaceful, spotless environment adhering to strict medical disinfection and patient comfort standards.",
-      icon: "Sparkles",
+      icon: "ShieldCheck",
     },
     {
       title: "Convenient Long Hours",
