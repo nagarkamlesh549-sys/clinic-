@@ -14,6 +14,7 @@ export default function GlobalEyeBackground() {
   const targetFrameRef = useRef<number>(1);
   const currentFrameRef = useRef<number>(1);
   const animationFrameIdRef = useRef<number | null>(null);
+  const isAnimatingRef = useRef<boolean>(false);
   const lastDrawnImgRef = useRef<HTMLImageElement | null>(null);
 
   // Helper to format frame path
@@ -25,10 +26,16 @@ export default function GlobalEyeBackground() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: false });
+
+    // Use desynchronized for low latency rendering on modern GPUs
+    const ctx = canvas.getContext("2d", {
+      alpha: false,
+      desynchronized: true,
+    });
     if (!ctx) return;
 
     let isDestroyed = false;
+    let cachedMaxScroll = 1;
 
     // 1. Declare renderFrame
     function renderFrame(frameIndex: number, forceRedraw = false) {
@@ -100,7 +107,7 @@ export default function GlobalEyeBackground() {
       ctx.drawImage(imgToDraw, drawX, drawY, drawW, drawH);
     }
 
-    // 2. Declare resizeCanvas
+    // 2. High-performance resize & maxScroll caching
     function resizeCanvas() {
       if (!canvas) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -112,35 +119,100 @@ export default function GlobalEyeBackground() {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
 
+      // Cache document scroll bounds to avoid layout thrashing in scroll handler
+      const docHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+      cachedMaxScroll = Math.max(1, docHeight - height);
+
       renderFrame(Math.round(currentFrameRef.current), true);
     }
 
     window.addEventListener("resize", resizeCanvas, { passive: true });
     resizeCanvas();
 
-    // 3. High-performance Priority Frame Preloader
-    function preloadFrames() {
-      const p1: number[] = [];
-      for (let i = 2; i <= TOTAL_FRAMES; i += 3) {
-        p1.push(i);
-      }
-      const p2: number[] = [];
-      for (let i = 2; i <= TOTAL_FRAMES; i++) {
-        if (!p1.includes(i)) p2.push(i);
+    // 3. Smooth, on-demand Animation Loop (Sleeps when idle!)
+    function startAnimation() {
+      if (isAnimatingRef.current || isDestroyed) return;
+      isAnimatingRef.current = true;
+      animationFrameIdRef.current = requestAnimationFrame(animate);
+    }
+
+    function animate() {
+      if (isDestroyed) {
+        isAnimatingRef.current = false;
+        return;
       }
 
-      const queue = [...p1, ...p2];
-      const CONCURRENCY = 14;
+      const diff = targetFrameRef.current - currentFrameRef.current;
+      const absDiff = Math.abs(diff);
+
+      if (absDiff > 0.05) {
+        // Dynamic adaptive lerp: snappy during fast scroll, silky during slow scroll
+        const lerpFactor = Math.min(0.32, Math.max(0.20, absDiff * 0.015));
+        currentFrameRef.current += diff * lerpFactor;
+        const frameToDraw = Math.round(currentFrameRef.current);
+        renderFrame(frameToDraw);
+        animationFrameIdRef.current = requestAnimationFrame(animate);
+      } else {
+        currentFrameRef.current = targetFrameRef.current;
+        renderFrame(Math.round(targetFrameRef.current));
+        // Target reached: Sleep loop to save 100% CPU/GPU and preserve battery!
+        isAnimatingRef.current = false;
+        animationFrameIdRef.current = null;
+      }
+    }
+
+    // 4. Low-latency scroll listener
+    function handleScroll() {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const rawProgress = Math.max(0, Math.min(1, scrollY / cachedMaxScroll));
+
+      // Non-linear easing curve: opens gracefully in the hero and stays in clear vision across the site
+      const easedProgress = Math.pow(rawProgress, 0.60);
+
+      const target = Math.min(
+        TOTAL_FRAMES,
+        Math.max(1, Math.round(easedProgress * (TOTAL_FRAMES - 1)) + 1)
+      );
+
+      if (target !== targetFrameRef.current) {
+        targetFrameRef.current = target;
+        startAnimation();
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Initial evaluation
+    handleScroll();
+
+    // 5. Tiered Asynchronous Image Preloader with off-thread decode()
+    function preloadFrames() {
+      // Tier 1: Every 6th frame as keyframes across the entire scroll journey (40 frames ~2.8MB total)
+      const keyframes: number[] = [];
+      for (let i = 6; i <= TOTAL_FRAMES; i += 6) {
+        keyframes.push(i);
+      }
+
+      // Tier 2: Remaining frames to be loaded in the background
+      const secondaryFrames: number[] = [];
+      for (let i = 2; i <= TOTAL_FRAMES; i++) {
+        if (!keyframes.includes(i)) {
+          secondaryFrames.push(i);
+        }
+      }
+
+      const queue = [...keyframes, ...secondaryFrames];
+      const CONCURRENCY = 6; // Optimal for HTTP/2 pipeline without network congestion
       let activeRequests = 0;
 
       function loadNext() {
         if (isDestroyed || queue.length === 0) return;
 
         while (activeRequests < CONCURRENCY && queue.length > 0) {
+          // Priority selection: pick frame closest to user's current target
           const currentTarget = Math.round(targetFrameRef.current);
           let chosenIdx = 0;
           let bestDist = Math.abs(queue[0] - currentTarget);
-          const lookAhead = Math.min(30, queue.length);
+          const lookAhead = Math.min(25, queue.length);
           for (let k = 1; k < lookAhead; k++) {
             const dist = Math.abs(queue[k] - currentTarget);
             if (dist < bestDist) {
@@ -154,23 +226,38 @@ export default function GlobalEyeBackground() {
 
           const img = new Image();
           img.src = getFramePath(frameIdx);
-          img.onload = () => {
-            if (isDestroyed) return;
+
+          let settled = false;
+          const onLoaded = () => {
+            if (settled || isDestroyed) return;
+            settled = true;
             imagesRef.current[frameIdx] = img;
             isLoadedRef.current[frameIdx] = true;
             activeRequests--;
 
+            // If user is currently looking at this frame or very close to it, re-render
             const cur = Math.round(currentFrameRef.current);
-            if (Math.abs(frameIdx - cur) <= 3) {
-              renderFrame(cur);
+            if (Math.abs(frameIdx - cur) <= 2) {
+              renderFrame(cur, true);
             }
 
             loadNext();
           };
-          img.onerror = () => {
+
+          const onError = () => {
+            if (settled || isDestroyed) return;
+            settled = true;
             activeRequests--;
             loadNext();
           };
+
+          img.onload = onLoaded;
+          img.onerror = onError;
+
+          // Offload raster decompression to background decoding thread
+          if (typeof img.decode === "function") {
+            img.decode().then(onLoaded).catch(onLoaded);
+          }
         }
       }
 
@@ -179,60 +266,25 @@ export default function GlobalEyeBackground() {
       }
     }
 
-    // 4. Load Frame 1 immediately
+    // 6. Instant Frame 1 Load with eager priority
     const img1 = new Image();
     img1.src = getFramePath(1);
-    img1.onload = () => {
-      if (isDestroyed) return;
+    let frame1Settled = false;
+    const onFrame1Ready = () => {
+      if (frame1Settled || isDestroyed) return;
+      frame1Settled = true;
       imagesRef.current[1] = img1;
       isLoadedRef.current[1] = true;
       setFirstFrameReady(true);
       renderFrame(1, true);
-
       preloadFrames();
     };
 
-    // 5. Scroll listener mapping entire webpage scroll progress to 240 frames
-    function handleScroll() {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      const docHeight = document.documentElement.scrollHeight;
-      const winHeight = window.innerHeight;
-      const maxScroll = Math.max(1, docHeight - winHeight);
-
-      const rawProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
-
-      // Non-linear easing curve: opens gracefully in the hero and stays in clear vision across the site
-      const easedProgress = Math.pow(rawProgress, 0.60);
-
-      const target = Math.min(
-        TOTAL_FRAMES,
-        Math.max(1, Math.round(easedProgress * (TOTAL_FRAMES - 1)) + 1)
-      );
-
-      targetFrameRef.current = target;
+    img1.onload = onFrame1Ready;
+    img1.onerror = onFrame1Ready;
+    if (typeof img1.decode === "function") {
+      img1.decode().then(onFrame1Ready).catch(onFrame1Ready);
     }
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    // 6. Smooth Lerp Animation Loop (60fps)
-    function animate() {
-      if (isDestroyed) return;
-
-      const diff = targetFrameRef.current - currentFrameRef.current;
-      if (Math.abs(diff) > 0.04) {
-        currentFrameRef.current += diff * 0.18;
-      } else {
-        currentFrameRef.current = targetFrameRef.current;
-      }
-
-      const frameToDraw = Math.round(currentFrameRef.current);
-      renderFrame(frameToDraw);
-
-      animationFrameIdRef.current = requestAnimationFrame(animate);
-    }
-
-    animationFrameIdRef.current = requestAnimationFrame(animate);
 
     return () => {
       isDestroyed = true;
@@ -247,12 +299,13 @@ export default function GlobalEyeBackground() {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden"
+      className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden will-change-transform transform-gpu"
+      style={{ transform: "translate3d(0,0,0)" }}
     >
       {/* High-speed HTML5 Canvas rendering the 240 eye-opening frames */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 will-change-transform"
         style={{ opacity: firstFrameReady ? 1 : 0 }}
       />
 

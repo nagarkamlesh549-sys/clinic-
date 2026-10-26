@@ -34,7 +34,7 @@ export default function VisitUs() {
           {/* Left Column: Address, Contact, & Timings Table */}
           <div className="lg:col-span-6 space-y-6">
             {/* Address Card */}
-            <div className="bg-[#0B2545]/80 backdrop-blur-md rounded-luxury p-7 sm:p-8 shadow-xl border border-white/12 space-y-4">
+            <div className="bg-[#0B2545]/85 sm:bg-[#0B2545]/80 sm:backdrop-blur-md rounded-luxury p-7 sm:p-8 shadow-xl border border-white/12 space-y-4">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-teal/20 text-teal-light flex items-center justify-center shrink-0 border border-teal/30">
                   <MapPin className="w-6 h-6" />
@@ -78,7 +78,7 @@ export default function VisitUs() {
             </div>
 
             {/* Timings Table */}
-            <div className="bg-[#0B2545]/80 backdrop-blur-md rounded-luxury p-7 sm:p-8 shadow-xl border border-white/12 space-y-4">
+            <div className="bg-[#0B2545]/85 sm:bg-[#0B2545]/80 sm:backdrop-blur-md rounded-luxury p-7 sm:p-8 shadow-xl border border-white/12 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Clock className="w-5 h-5 text-teal-light" />
@@ -117,7 +117,7 @@ export default function VisitUs() {
           </div>
 
           {/* Right Column: Embedded Google Map */}
-          <div className="lg:col-span-6 bg-[#0B2545]/80 backdrop-blur-md rounded-luxury p-3 shadow-xl border border-white/12 overflow-hidden h-full min-h-[460px] flex flex-col">
+          <div className="lg:col-span-6 bg-[#0B2545]/85 sm:bg-[#0B2545]/80 sm:backdrop-blur-md rounded-luxury p-3 shadow-xl border border-white/12 overflow-hidden h-full min-h-[460px] flex flex-col">
             <div className="relative w-full h-[380px] sm:h-[420px] lg:h-full rounded-[18px] overflow-hidden bg-slate-900 border border-white/10">
               <iframe
                 title="Netram Eye Care Location on Google Maps"

@@ -12,7 +12,7 @@ export const CLINIC_INFO = {
       "Having completed specialized fellowship training at the esteemed L V Prasad Eye Institute (LVPEI, Hyderabad), he brings advanced clinical precision and modern micro-surgical techniques to patients across Bhopal and central India.",
     bioParagraph3:
       "Every treatment plan is thoughtfully customized, ensuring you receive clear guidance, honest assessments, and empathetic support at every stage.",
-    imagePath: "/images/doctor.png",
+    imagePath: "/images/doctor.webp",
   },
   contact: {
     phone: "79771 92955",

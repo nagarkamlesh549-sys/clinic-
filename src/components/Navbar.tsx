@@ -10,11 +10,12 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let lastScrolled = false;
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
+      const isPast = window.scrollY > 20;
+      if (isPast !== lastScrolled) {
+        lastScrolled = isPast;
+        setIsScrolled(isPast);
       }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });

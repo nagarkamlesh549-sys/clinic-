@@ -38,7 +38,7 @@ export default function HowItWorks() {
               return (
                 <div
                   key={step.step}
-                  className="bg-[#0B2545]/75 hover:bg-[#0B2545]/90 rounded-luxury p-8 shadow-xl hover:shadow-[0_20px_40px_rgba(19,163,168,0.2)] border border-white/12 hover:border-teal/40 backdrop-blur-md transition-all duration-300 flex flex-col items-center text-center group hover:-translate-y-1.5"
+                  className="bg-[#0B2545]/85 sm:bg-[#0B2545]/75 hover:bg-[#0B2545]/90 rounded-luxury p-8 shadow-xl hover:shadow-[0_20px_40px_rgba(19,163,168,0.2)] border border-white/12 hover:border-teal/40 sm:backdrop-blur-md transition-all duration-300 flex flex-col items-center text-center group hover:-translate-y-1.5"
                 >
                   {/* Step Number Badge */}
                   <div className="w-16 h-16 rounded-full bg-[#07172C] text-white flex items-center justify-center font-serif font-bold text-xl mb-6 relative group-hover:scale-105 transition-transform shadow-md shadow-navy/20 border-2 border-gold/50">

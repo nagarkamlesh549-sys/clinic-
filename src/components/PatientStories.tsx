@@ -47,7 +47,7 @@ export default function PatientStories() {
         </div>
 
         {/* Carousel Container */}
-        <div className="relative bg-[#0B2545]/80 backdrop-blur-md rounded-luxury-lg p-8 sm:p-12 shadow-2xl border border-white/12 max-w-3xl mx-auto">
+        <div className="relative bg-[#0B2545]/85 sm:bg-[#0B2545]/80 sm:backdrop-blur-md rounded-luxury-lg p-8 sm:p-12 shadow-2xl border border-white/12 max-w-3xl mx-auto">
           <Quote className="w-12 h-12 text-teal/20 absolute top-6 left-6 -z-0" />
 
           <div className="min-h-[220px] flex flex-col justify-between relative z-10">

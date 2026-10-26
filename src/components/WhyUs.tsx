@@ -48,7 +48,7 @@ export default function WhyUs() {
             return (
               <div
                 key={point.title}
-                className="bg-[#0B2545]/75 hover:bg-[#0B2545]/90 backdrop-blur-md p-7 sm:p-8 rounded-luxury shadow-xl hover:shadow-[0_20px_40px_rgba(19,163,168,0.2)] border border-white/12 hover:border-teal/40 transition-all duration-300 hover:-translate-y-1.5 flex flex-col group"
+                className="bg-[#0B2545]/85 sm:bg-[#0B2545]/75 hover:bg-[#0B2545]/90 sm:backdrop-blur-md p-7 sm:p-8 rounded-luxury shadow-xl hover:shadow-[0_20px_40px_rgba(19,163,168,0.2)] border border-white/12 hover:border-teal/40 transition-all duration-300 hover:-translate-y-1.5 flex flex-col group"
               >
                 <div className="w-12 h-12 rounded-xl bg-teal/20 text-teal-light flex items-center justify-center mb-5 shrink-0 transition-transform group-hover:scale-105 border border-teal/20">
                   <IconComponent className="w-6 h-6" />

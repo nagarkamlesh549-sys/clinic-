@@ -40,7 +40,7 @@ export default function FAQ() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ duration: 0.4, delay: index * 0.08 }}
-                className="bg-[#0B2545]/75 hover:bg-[#0B2545]/85 rounded-luxury border border-white/12 shadow-lg backdrop-blur-md overflow-hidden transition-all duration-200"
+                className="bg-[#0B2545]/85 sm:bg-[#0B2545]/75 hover:bg-[#0B2545]/90 rounded-luxury border border-white/12 shadow-lg sm:backdrop-blur-md overflow-hidden transition-all duration-200"
               >
                 <button
                   type="button"

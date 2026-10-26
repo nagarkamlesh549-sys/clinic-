@@ -37,7 +37,7 @@ export default function Services() {
             return (
               <div
                 key={service.id}
-                className="group relative bg-[#0B2545]/75 hover:bg-[#0B2545]/90 rounded-luxury-lg p-8 sm:p-9 shadow-2xl hover:shadow-[0_20px_40px_rgba(19,163,168,0.2)] border border-white/12 hover:border-teal/50 backdrop-blur-md transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between"
+                className="group relative bg-[#0B2545]/85 sm:bg-[#0B2545]/75 hover:bg-[#0B2545]/95 rounded-luxury-lg p-8 sm:p-9 shadow-2xl hover:shadow-[0_20px_40px_rgba(19,163,168,0.2)] border border-white/12 hover:border-teal/50 sm:backdrop-blur-md transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between"
               >
                 {/* Subtle top gold accent bar on hover */}
                 <div className="absolute top-0 left-8 right-8 h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />

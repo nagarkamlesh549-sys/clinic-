@@ -17,7 +17,7 @@ export default function MeetDoctor() {
               <div className="absolute -inset-4 bg-gradient-to-tr from-teal/25 via-teal-soft/30 to-gold/20 rounded-[32px] blur-2xl opacity-70 pointer-events-none" />
 
               {/* Elegant Luxury Frame with Gold Border & Arch/Rounded Top */}
-              <div className="relative rounded-[28px] overflow-hidden border-[2px] border-gold/70 bg-[#0B2545]/80 shadow-[0_20px_50px_rgba(0,0,0,0.4)] backdrop-blur-md">
+              <div className="relative rounded-[28px] overflow-hidden border-[2px] border-gold/70 bg-[#0B2545]/85 sm:bg-[#0B2545]/80 shadow-[0_20px_50px_rgba(0,0,0,0.4)] sm:backdrop-blur-md">
                 {/* Image element keeping natural proportions and full visibility of face & folded arms */}
                 <div className="relative aspect-[3/4] w-full bg-slate-900">
                   <Image
@@ -76,7 +76,7 @@ export default function MeetDoctor() {
 
             {/* Key Clinical Credentials & Verified Background */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-[#0B2545]/75 border border-white/12 shadow-lg backdrop-blur-md">
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-[#0B2545]/85 sm:bg-[#0B2545]/75 border border-white/12 shadow-lg sm:backdrop-blur-md">
                 <div className="w-8 h-8 rounded-lg bg-teal/20 text-teal-light flex items-center justify-center shrink-0 border border-teal/30">
                   <GraduationCap className="w-4 h-4" />
                 </div>
@@ -86,7 +86,7 @@ export default function MeetDoctor() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-[#0B2545]/75 border border-white/12 shadow-lg backdrop-blur-md">
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-[#0B2545]/85 sm:bg-[#0B2545]/75 border border-white/12 shadow-lg sm:backdrop-blur-md">
                 <div className="w-8 h-8 rounded-lg bg-teal/20 text-teal-light flex items-center justify-center shrink-0 border border-teal/30">
                   <Stethoscope className="w-4 h-4" />
                 </div>

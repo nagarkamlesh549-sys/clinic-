@@ -59,7 +59,7 @@ export default function Hero() {
 
               <a
                 href={CLINIC_INFO.contact.phoneTel}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 rounded-full bg-[#0B2545]/80 hover:bg-[#0B2545] text-white font-semibold text-sm sm:text-base border border-white/25 hover:border-white/40 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 shadow-lg"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 sm:py-4 rounded-full bg-[#0B2545]/85 sm:bg-[#0B2545]/80 hover:bg-[#0B2545] text-white font-semibold text-sm sm:text-base border border-white/25 hover:border-white/40 sm:backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 shadow-lg"
               >
                 <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-teal" />
                 <span>Call Now: {CLINIC_INFO.contact.phone}</span>
@@ -67,7 +67,7 @@ export default function Hero() {
             </div>
 
             {/* Trust Anchors */}
-            <div className="pt-4 sm:pt-5 border-t border-white/15 w-full grid grid-cols-3 gap-2 sm:gap-4 text-center bg-[#0B2545]/70 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-white/10 shadow-md">
+            <div className="pt-4 sm:pt-5 border-t border-white/15 w-full grid grid-cols-3 gap-2 sm:gap-4 text-center bg-[#0B2545]/85 sm:bg-[#0B2545]/70 sm:backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-white/10 shadow-md">
               <div className="px-1 py-1">
                 <p className="text-xs sm:text-sm font-semibold text-white">Laser Precision</p>
                 <p className="text-[10px] sm:text-[11px] text-slate-300">Modern diagnostic care</p>
